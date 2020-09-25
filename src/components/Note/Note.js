@@ -20,7 +20,7 @@ const Note = (props) => {
 
                             <div className="d-flex flex-row-reverse" >
                                 <Tooltip title="Delete" onClick={()=>props.deleteNote(props.id)} >
-                                    <Fab color="primary" >
+                                    <Fab color="secondary" >
                                         <DeleteIcon />
                                     </Fab>
                                 </Tooltip>
