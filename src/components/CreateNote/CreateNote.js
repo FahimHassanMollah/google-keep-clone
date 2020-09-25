@@ -9,36 +9,41 @@ import Note from '../Note/Note';
 import { makeStyles } from '@material-ui/core';
 const useStyles = makeStyles((theme) => ({
     fab: {
-      margin: theme.spacing(2),
+        margin: theme.spacing(2),
     },
     absolute: {
-      position: 'absolute',
-      bottom: theme.spacing(2),
-      right: theme.spacing(3),
+        position: 'absolute',
+        bottom: theme.spacing(2),
+        right: theme.spacing(3),
     },
-  }));
+}));
 
-    
+
 const CreateNote = () => {
     const [note, setnote] = useState({
-        title:"",
-        description:""
+        title: "",
+        description: ""
     })
     const [noteArray, setNoteArray] = useState([])
+    const [titleExpand, setTitleExpand] = useState(false)
     const classes = useStyles();
     const createNoteInputHandler = (e) => {
-        let notes={...note};
-        notes[e.target.name]=e.target.value;
+        let notes = { ...note };
+        notes[e.target.name] = e.target.value;
         setnote(notes)
     }
     const addNoteHandler = () => {
-        let notesArray=[...noteArray,note];
+        let notesArray = [...noteArray, note];
         setNoteArray(notesArray);
         setnote({
-            title:"",
-            description:""
+            title: "",
+            description: ""
         })
-       
+        setTitleExpand(false)
+    }
+    const deleteNote = (note) => {
+        let newNotes=noteArray.filter((value,index)=>index!==note)
+        setNoteArray(newNotes);
     }
     return (
         <div>
@@ -46,33 +51,36 @@ const CreateNote = () => {
                 <Row className="justify-content-md-center pt-4">
                     <Col md={7}>
                         <div className="p-2 shadow">
-                            <InputGroup size="sm" className="mb-3">
-                                <FormControl value={note.title}  name="title" onChange={createNoteInputHandler} className="border-0 form-control px-2" placeholder="Title" />
-                            </InputGroup>
+                           {
+                               titleExpand&& <InputGroup size="sm" className="mb-3">
+                               <FormControl value={note.title} name="title" onChange={createNoteInputHandler} className="border-0 form-control px-2" placeholder="Title" />
+                           </InputGroup>
+                           }
                             <InputGroup size="lg">
-                                <FormControl  value={note.description}  name="description" onChange={createNoteInputHandler} placeholder="Take a note..." className="border-0 px-2" as="textarea" />
-
+                                <FormControl onClick={()=>setTitleExpand(true)} value={note.description} name="description" onChange={createNoteInputHandler} placeholder="Take a note..." className="border-0 px-2" as="textarea" />
                             </InputGroup>
-                            <div className="d-flex flex-row-reverse">
-                                <Tooltip title="Add" >
-                                    <Fab color="primary" className={classes.fab} >
-                                        <AddIcon  onClick={addNoteHandler} />
-                                    </Fab>
-                                     
-                                </Tooltip>
-                              
-                            </div>
+                           {
+                               titleExpand&& <div className="d-flex flex-row-reverse" onClick={addNoteHandler}>
+                               <Tooltip title="Add" >
+                                   <Fab color="primary" className={classes.fab} >
+                                       <AddIcon />
+                                   </Fab>
+                               </Tooltip>
+                           </div>
+                           }
                         </div>
                     </Col>
                 </Row>
-                <Row>
-                    <Col sm={12} className="pt-5">
-                        <Row>
-                            <Col sm={12} className="">
-                            <Note></Note>
-                        
-                            </Col>
+                <Row className="justify-content-md-center">
+                    <Col sm={12} xs={12} className="pt-5">
+
+                        <Row className="justify-content-center">
+                            {
+                                noteArray.map((note,index) => <Note note={note} key={index} deleteNote={deleteNote} id={index}></Note>)
+                            }
                         </Row>
+
+
                     </Col>
                 </Row>
             </Container>
